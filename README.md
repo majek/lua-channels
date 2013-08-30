@@ -1,5 +1,4 @@
-[![Build Status](https://travis-ci.org/majek/lua-channels.png)](https://travis-ci.org/majek/lua-channels.png])
-
+[![Build Status](https://travis-ci.org/majek/lua-channels.png)](https://travis-ci.org/majek/lua-channels.png)
 
 Go style Channels for Lua
 ---
