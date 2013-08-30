@@ -14,7 +14,7 @@ install:
   - sudo apt-get install lua5.1
   - sudo apt-get install lua5.2
 
-script: "$(LUA) task.lua"
+script: "$LUA task.lua"
 
 notifications:
   recipients:
