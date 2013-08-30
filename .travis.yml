@@ -1,9 +1,9 @@
-language: erlang
+language: c
 
 env:
   - LUA="lua5.1"
   - LUA="lua5.2"
-  - LUA="luajit"
+  - LUA="$(find /usr/bin -name luajit\*|head -n 1)"
 
 branches:
   only:
@@ -17,9 +17,6 @@ install:
 script: "$LUA task.lua"
 
 notifications:
-  recipients:
-    - travis@popcount.org
   email:
-    on_success: change
-    on_failure: change
- 
+    recipients:
+      - travis@popcount.org
