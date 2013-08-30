@@ -3,16 +3,15 @@ language: c
 env:
   - LUA="lua5.1"
   - LUA="lua5.2"
-  - LUA="$(find /usr/bin -name luajit\*|head -n 1)"
+  - LUA="$(find /usr -name luajit\*|grep bin|head -n 1)"
 
 branches:
   only:
     - master
 
 install:
-  - sudo apt-get install luajit
-  - sudo apt-get install lua5.1
-  - sudo apt-get install lua5.2
+  - sudo apt-get -qy install luajit lua5.1 lua5.2
+  - find /usr -name luajit\*
 
 script: "$LUA task.lua"
 
