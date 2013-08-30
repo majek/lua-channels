@@ -1,0 +1,24 @@
+language: erlang
+
+env:
+  - LUA="lua5.1"
+  - LUA="lua5.2"
+  - LUA="luajit"
+
+branches:
+  only:
+    - master
+
+install:
+  - sudo apt-get install luajit
+  - sudo apt-get install lua5.1
+  - sudo apt-get install lua5.2
+
+script: "$(LUA) task.lua"
+
+notifications:
+  recipients:
+    - travis@popcount.org
+  email:
+    on_success: change
+    on_failure: change
