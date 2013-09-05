@@ -1,7 +1,9 @@
 [![Build Status](https://travis-ci.org/majek/lua-channels.png)](https://travis-ci.org/majek/lua-channels.png)
 
-Go style Channels for Lua
----
+Lua-Channels
+============
+
+*Go style Channels for Lua*
 
 This code is derived from libtask library by Russ Cox, mainly from
 channel.c. Semantically channels as implemented here are quite
@@ -10,7 +12,7 @@ similar to channels from the Go language.
 Usage (we're using unbuffered channel here):
 
 ```
-local task = require('task')
+local task = require('lua-channels')
 
 local function counter(channel)
    local i = 1
