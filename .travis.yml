@@ -14,7 +14,7 @@ install:
   - sudo ln -s /usr/bin/luajit* /usr/bin/luajit
   - find /usr/bin -name luajit\*
 
-script: "$LUA src/task.lua"
+script: "$LUA src/lua-channels.lua"
 
 notifications:
   email:
