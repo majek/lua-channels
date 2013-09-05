@@ -371,7 +371,14 @@ local Channel = {
       return string.format("<Channel size=%i/%i send_alt=%i recv_alt=%i>",
                            self._buf:len(), self._buf.size, self._send_alts:len(),
                            self._recv_alts:len())
-   end
+   end,
+
+   __call = function(self)
+      local function f(s, v)
+         return true, self:recv()
+      end
+      return f, nil, nil
+   end,
 }
 
 ----------------------------------------------------------------------------
@@ -555,6 +562,8 @@ local tests = {
       assert(done)
    end,
 
+   -- Apparently it's not really a Sieve of Eratosthenes:
+   --   http://www.cs.hmc.edu/~oneill/papers/Sieve-JFP.pdf
    eratosthenes_sieve = function()
       local done
       local function counter(c)
@@ -601,6 +610,38 @@ local tests = {
       task.scheduler()
       assert(done)
    end,
+
+   channel_as_iterator = function()
+      local done
+      local function counter(c)
+         local i = 2
+         while true do
+            c:send(i)
+            i = i + 1
+         end
+      end
+
+      local function main()
+         local numbers = task.Channel:new()
+         task.spawn(counter, numbers)
+         for _, j in numbers() do
+            if j == 100 then
+               break
+            end
+            done = true
+         end
+      end
+      if _VERSION == "Lua 5.1" and not luajit then
+         -- sorry, this doesn't work in 5.1
+         print('skipping... (5.1 unsupported)')
+         done = true
+      else
+         task.spawn(main)
+         task.scheduler()
+      end
+      assert(done)
+   end,
+
 }
 
 -- No parameters: run tests
