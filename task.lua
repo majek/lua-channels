@@ -449,37 +449,30 @@ local tests = {
    end,
 
    concurrent_send_and_recv = function()
-      local log = {}
+      local l = {}
       local function a(c, name)
          -- Blocking send and recv from the same process
          local alt = {{c = c, op = task.SEND, p = 1},
                       {c = c, op = task.RECV}}
          local i, v = task.chanalt(alt, true)
-         table.insert(log, string.format('%s i=%i v=%i', name, i, v or -1))
+         local k = string.format('%s %s', name, i == 1 and "send" or "recv")
+         l[k] = (l[k] or 0) + 1
       end
 
-      -- This time we do relay on random. Seed are adjusted to make
-      -- math.random give the same results for all lua versions.
-      local seeds = ({
-                        ["Lua 5.2"] = {nojit = {2, 5}},
-                        ["Lua 5.1"] = {nojit = {0, 5}, jit = {0, 5}},
-                    })[_VERSION][luajit and 'jit' or 'nojit']
+      for i = 0, 1000 do
+         math.randomseed(i)
+         local c = task.Channel:new()
+         task.spawn(a, c, "a")
+         task.spawn(a, c, "b")
+         task.scheduler()
+      end
 
-      math.randomseed(seeds[1])
-      local c = task.Channel:new()
-      task.spawn(a, c, "a")
-      task.spawn(a, c, "b")
-      task.scheduler()
-      assert(log[1] == 'a i=2 v=1')
-      assert(log[2] == 'b i=1 v=-1')
-
-      log = {}
-      math.randomseed(seeds[2])
-      task.spawn(a, c, "a")
-      task.spawn(a, c, "b")
-      task.scheduler()
-      assert(log[1] == 'a i=1 v=-1')
-      assert(log[2] == 'b i=2 v=1')
+      -- Make sure we have randomness, that is: events occur in both
+      -- orders in 1000 runs
+      assert(l['a recv'] > 0)
+      assert(l['a send'] > 0)
+      assert(l['b recv'] > 0)
+      assert(l['b send'] > 0)
    end,
 
    channels_from_a_coroutine = function()
