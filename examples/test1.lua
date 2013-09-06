@@ -1,4 +1,4 @@
-local task = require("task")
+local task = require("lua-channels")
 
 function counter(c)
    local i = 1
